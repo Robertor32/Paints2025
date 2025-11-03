@@ -1,0 +1,101 @@
+{
+  "info": {
+    "name": "Paints2025",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/health"
+      }
+    },
+    {
+      "name": "Login (caja)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"caja@paint.com\", \"password\": \"123456\"}"
+        },
+        "url": "http://localhost:4000/auth/login"
+      }
+    },
+    {
+      "name": "Catálogo",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/catalogo/productos"
+      }
+    },
+    {
+      "name": "Tienda cercana (Xela)",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/catalogo/tienda-cercana?lat=14.85&lon=-91.52"
+      }
+    },
+    {
+      "name": "Crear Cotización",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"number\": \"COT-0001\", \"storeId\": 1, \"customerId\": 1, \"valid_until\": \"2025-12-31\", \"items\": [{\"productId\": 5, \"quantity\": 2, \"unit_price\": 150}, {\"productId\": 1, \"quantity\": 3}]}"
+        },
+        "url": "http://localhost:4000/cotizaciones"
+      }
+    },
+    {
+      "name": "Cotización PDF",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/cotizaciones/COT-0001/pdf"
+      }
+    },
+    {
+      "name": "Ingreso Inventario",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"supplierId\": 1, \"storeId\": 1, \"items\": [{\"productId\": 5, \"quantity\": 10, \"unit_cost\": 120}, {\"productId\": 1, \"quantity\": 25, \"unit_cost\": 20}], \"notes\": \"Reposici\\u00f3n fin de mes\"}"
+        },
+        "url": "http://localhost:4000/ingresos"
+      }
+    },
+    {
+      "name": "Ventas por tienda",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/reportes/tiendas/ventas?desde=2025-09-01&hasta=2025-10-31"
+      }
+    },
+    {
+      "name": "Inventario por tienda",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:4000/reportes/tiendas/inventario"
+      }
+    }
+  ]
+}

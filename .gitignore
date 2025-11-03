@@ -1,0 +1,15 @@
+﻿node_modules/
+npm-debug.log*
+yarn-*.log*
+pnpm-debug.log*
+package-lock.json
+
+.env
+backups/
+exports/
+*.sqlite
+*.db
+
+.DS_Store
+Thumbs.db
+.vscode/
