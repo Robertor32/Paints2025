@@ -1,4 +1,4 @@
-# Paints 2025 (Node + Express + Sequelize)
+# Paints 2025
 
 Sistema transaccional para cadena de pinturas "Paints" (BD II + Programación Web).
 
