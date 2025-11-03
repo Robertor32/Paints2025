@@ -1,6 +1,8 @@
 import API from '/js/api.js';
 
 export default async function(view){
+  // Helper for scoping queries within this view
+  const $ = (q) => view.querySelector(q);
   view.innerHTML = `
   <div class="card p-3">
     <h4>Inventario por tienda</h4>
@@ -14,7 +16,7 @@ export default async function(view){
   </div>`;
 
   const data = await API.inventarioPorTienda();
-  const tbody = document.getElementById('tbody');
+  const tbody = $('#tbody');
 
   function render(q=''){
     const rows = [];
@@ -28,5 +30,5 @@ export default async function(view){
   }
 
   render();
-  document.getElementById('filtro').oninput = e=> render(e.target.value);
+  $('#filtro').oninput = (e) => render(e.target.value);
 }

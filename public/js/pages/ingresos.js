@@ -1,6 +1,8 @@
 import API from '/js/api.js';
 
 export default async function(view){
+  // Helper to scope queries within this view
+  const $ = (q) => view.querySelector(q);
   view.innerHTML = `
   <div class="card p-3">
     <h4>Ingreso a inventario</h4>
@@ -17,8 +19,8 @@ export default async function(view){
     <div id="msg" class="mt-2 text-muted small"></div>
   </div>`;
 
-  const tb = document.querySelector('#tb tbody');
-  const addRow = (pid=5,qty=10,c=120)=>{
+  const tb = $('#tb tbody');
+  const addRow = (pid = 5, qty = 10, c = 120) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><input class="form-control form-control-sm" value="${pid}"></td>
@@ -28,17 +30,26 @@ export default async function(view){
     tr.querySelector('button').onclick = ()=> tr.remove();
     tb.appendChild(tr);
   };
-  addRow(); addRow(1,25,20);
-  document.getElementById('add').onclick = ()=> addRow();
+  addRow(); addRow(1, 25, 20);
+  $('#add').onclick = () => addRow();
 
-  document.getElementById('ok').onclick = async ()=>{
-    const items = [...tb.querySelectorAll('tr')].map(tr=>{
-      const [p,q,c] = [...tr.querySelectorAll('input')].map(x=>Number(x.value));
-      return { productId:p, quantity:q, unit_cost:c };
+  $('#ok').onclick = async () => {
+    const items = [...tb.querySelectorAll('tr')].map(tr => {
+      const [p, q, c] = [...tr.querySelectorAll('input')].map(x => Number(x.value));
+      return { productId: p, quantity: q, unit_cost: c };
     });
-    const body = { supplierId:Number(document.getElementById('supp').value), storeId:Number(document.getElementById('store').value), items, notes:document.getElementById('notes').value };
-    const msg = document.getElementById('msg');
-    try { const r = await API.crearIngreso(body); msg.textContent = 'OK: ' + JSON.stringify(r); }
-    catch(e){ msg.textContent = e.message; }
+    const body = {
+      supplierId: Number($('#supp').value),
+      storeId: Number($('#store').value),
+      items,
+      notes: $('#notes').value,
+    };
+    const msg = $('#msg');
+    try {
+      const r = await API.crearIngreso(body);
+      msg.textContent = 'OK: ' + JSON.stringify(r);
+    } catch (e) {
+      msg.textContent = e.message;
+    }
   };
 }

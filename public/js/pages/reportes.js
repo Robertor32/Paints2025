@@ -1,6 +1,8 @@
 ﻿import API from '/js/api.js';
 
 export default async function(view){
+  // Helper to scope queries within this view
+  const $ = (q) => view.querySelector(q);
   view.innerHTML = `
   <div class="card p-3">
     <h4>Reportes</h4>
@@ -14,8 +16,8 @@ export default async function(view){
     <pre id="out" class="small text-muted" style="white-space:pre-wrap"></pre>
   </div>`;
 
-  const out = document.getElementById('out');
-  document.getElementById('ventas').onclick = async ()=> out.textContent = JSON.stringify(await API.ventasPorTienda(), null, 2);
-  document.getElementById('inventario').onclick = async ()=> out.textContent = JSON.stringify(await API.inventarioPorTienda(), null, 2);
-  document.getElementById('mpago').onclick = async ()=> out.textContent = JSON.stringify(await API.mediosPago(), null, 2);
+  const out = $('#out');
+  $('#ventas').onclick = async () => { out.textContent = JSON.stringify(await API.ventasPorTienda(), null, 2); };
+  $('#inventario').onclick = async () => { out.textContent = JSON.stringify(await API.inventarioPorTienda(), null, 2); };
+  $('#mpago').onclick = async () => { out.textContent = JSON.stringify(await API.mediosPago(), null, 2); };
 }

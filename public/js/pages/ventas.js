@@ -1,6 +1,8 @@
 ﻿import API from '/js/api.js';
 
 export default async function(view){
+  // Helper function to scope DOM queries within the current view
+  const $ = (q) => view.querySelector(q);
   view.innerHTML = `
   <div class="card p-3">
     <h4>Venta rápida</h4>
@@ -26,7 +28,7 @@ export default async function(view){
     <div id="msg" class="mt-2 text-muted small"></div>
   </div>`;
 
-  const tb = document.querySelector('#tb tbody');
+  const tb = $('#tb tbody');
   const addRow = (pid=5,qty=2,price=150)=>{
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -38,28 +40,29 @@ export default async function(view){
     tb.appendChild(tr);
   };
   addRow(); addRow(1,3,25);
-  document.getElementById('add').onclick = ()=> addRow();
+  $('#add').onclick = () => addRow();
 
-  document.getElementById('ok').onclick = async ()=>{
-    const msg = document.getElementById('msg');
-    const items = [...tb.querySelectorAll('tr')].map(tr=>{
-      const [pid,qty,price] = [...tr.querySelectorAll('input')].map(x=>Number(x.value));
-      return { productId:pid, quantity:qty, unit_price:price };
+  $('#ok').onclick = async () => {
+    const msg = $('#msg');
+    const items = [...tb.querySelectorAll('tr')].map(tr => {
+      const [pid, qty, price] = [...tr.querySelectorAll('input')].map(x => Number(x.value));
+      return { productId: pid, quantity: qty, unit_price: price };
     });
-    const total = items.reduce((a,i)=>a + i.quantity*i.unit_price, 0);
-    const ef = Number(document.getElementById('pagoEf').value || 0);
-    const tj = Number(document.getElementById('pagoTj').value || 0);
-    if(ef + tj !== total){ msg.textContent = 'Los pagos deben sumar Q ' + total; return; }
+    const total = items.reduce((a, i) => a + i.quantity * i.unit_price, 0);
+    const ef = Number($('#pagoEf').value || 0);
+    const tj = Number($('#pagoTj').value || 0);
+    // Use a tolerance when comparing sums to account for floating point errors
+    if (Math.abs((ef + tj) - total) > 0.005) { msg.textContent = 'Los pagos deben sumar Q ' + total; return; }
 
     try{
       const body = {
-        series: document.getElementById('serie').value,
-        number: document.getElementById('numero').value,
-        storeId: Number(document.getElementById('store').value),
-        customerId: Number(document.getElementById('cust').value),
-        cashierId: Number(document.getElementById('cashier').value),
+        series: $('#serie').value,
+        number: $('#numero').value,
+        storeId: Number($('#store').value),
+        customerId: Number($('#cust').value),
+        cashierId: Number($('#cashier').value),
         items,
-        payments: [{ method:'efectivo', amount: ef }, { method:'tarjeta', amount: tj }]
+        payments: [ { method: 'efectivo', amount: ef }, { method: 'tarjeta', amount: tj } ],
       };
       const r = await API.crearFactura(body);
       msg.textContent = 'OK. Total Q ' + r.total + ' | invoice ' + r.invoice;

@@ -1,6 +1,10 @@
 ﻿import API from '/js/api.js';
 
 export default async function(view){
+  // Helper for scoped element selection within this view
+  const $ = (q) => view.querySelector(q);
+
+  // Render markup for dashboard cards
   view.innerHTML = `
   <div class="row">
     <div class="col-lg-4">
@@ -22,20 +26,30 @@ export default async function(view){
     </div>
   </div>`;
 
-  const ventas = await API.ventasPorTienda(); // [{tienda,monto}]
-  const ctx = document.getElementById('chartVentas');
+  // Render chart of sales by store
+  const ventas = await API.ventasPorTienda();
+  const ctx = $('#chartVentas');
   new Chart(ctx, {
     type: 'bar',
-    data: { labels: ventas.map(x=>x.tienda), datasets: [{ label: 'Q', data: ventas.map(x=>x.monto) }] },
-    options: { plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+    data: {
+      labels: ventas.map((x) => x.tienda),
+      datasets: [ { label: 'Q', data: ventas.map((x) => x.monto) } ]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
   });
 
+  // Render inventory rows (top 10 per store)
   const inv = await API.inventarioPorTienda();
   const rows = [];
-  Object.keys(inv).forEach(tienda=>{
-    inv[tienda].slice(0,10).forEach(p=>{
-      rows.push(`<tr><td>${tienda}</td><td>${p.producto}</td><td>${p.stock}</td><td>${p.min_stock}</td></tr>`);
+  Object.keys(inv).forEach((tienda) => {
+    inv[tienda].slice(0, 10).forEach((p) => {
+      rows.push(
+        `<tr><td>${tienda}</td><td>${p.producto}</td><td>${p.stock}</td><td>${p.min_stock}</td></tr>`
+      );
     });
   });
-  document.querySelector('#tbInv tbody').innerHTML = rows.join('');
+  $('#tbInv tbody').innerHTML = rows.join('');
 }

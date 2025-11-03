@@ -1,6 +1,8 @@
 import API from '/js/api.js';
 
 export default async function(view){
+  // Helper to scope queries within this view
+  const $ = (q) => view.querySelector(q);
   view.innerHTML = `
   <div class="card p-3">
     <h4>Respaldo</h4>
@@ -9,10 +11,15 @@ export default async function(view){
     <div id="msg" class="mt-2 small text-muted"></div>
   </div>`;
 
-  document.getElementById('go').onclick = async ()=>{
-    const msg = document.getElementById('msg');
+  // Bind click event using scoped selectors
+  $('#go').onclick = async () => {
+    const msg = $('#msg');
     msg.textContent = 'Trabajando...';
-    try { const r = await API.backup(); msg.textContent = 'OK: ' + JSON.stringify(r); }
-    catch(e){ msg.textContent = e.message; }
+    try {
+      const r = await API.backup();
+      msg.textContent = 'OK: ' + JSON.stringify(r);
+    } catch (e) {
+      msg.textContent = e.message;
+    }
   };
 }
